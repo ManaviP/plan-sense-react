@@ -12,22 +12,41 @@ const Index = () => {
   const [textContent, setTextContent] = useState("");
   const [showResponse, setShowResponse] = useState(false);
   const [aiResponse, setAIResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [followUpQuestion, setFollowUpQuestion] = useState("");
   const [followUpResponse, setFollowUpResponse] = useState("");
 
-  const handleProcessClick = () => {
-    // In a real app, this would call an API to process the document
-    // For now, we'll simulate an AI response
-    setAIResponse(
-      "Based on your insurance plan, I've identified the following key points:\n\n" +
-      "• Your annual deductible is $1,000 for individual coverage\n" +
-      "• Out-of-pocket maximum is $5,000 per calendar year\n" +
-      "• Prescription coverage includes a $15 copay for generic medications\n" +
-      "• Emergency room visits are covered at 80% after deductible\n" +
-      "• Pre-existing conditions are covered after a 6-month waiting period\n\n" +
-      "This plan offers good coverage for preventive care but has limited benefits for specialized treatments. Consider reviewing the mental health coverage section, which appears to have significant limitations."
-    );
-    setShowResponse(true);
+  const handleProcessClick = async () => {
+    setIsLoading(true);
+    
+    try {
+      // In the future, this will be replaced with actual API call to Python backend
+      // Example of future implementation:
+      // const formData = new FormData();
+      // if (fileContent) formData.append('file', fileContent);
+      // if (textContent) formData.append('text', textContent);
+      // const response = await fetch('/api/analyze', { method: 'POST', body: formData });
+      // const data = await response.json();
+      // setAIResponse(data.analysis);
+      
+      // For now, we'll simulate an AI response with a timeout
+      setTimeout(() => {
+        setAIResponse(
+          "Based on your insurance plan, I've identified the following key points:\n\n" +
+          "• Your annual deductible is $1,000 for individual coverage\n" +
+          "• Out-of-pocket maximum is $5,000 per calendar year\n" +
+          "• Prescription coverage includes a $15 copay for generic medications\n" +
+          "• Emergency room visits are covered at 80% after deductible\n" +
+          "• Pre-existing conditions are covered after a 6-month waiting period\n\n" +
+          "This plan offers good coverage for preventive care but has limited benefits for specialized treatments. Consider reviewing the mental health coverage section, which appears to have significant limitations."
+        );
+        setShowResponse(true);
+        setIsLoading(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Error processing document:", error);
+      setIsLoading(false);
+    }
   };
 
   const handleSuggestionClick = (planName: string) => {
@@ -35,9 +54,20 @@ const Index = () => {
     setTextContent(`This is the content of ${planName}. In a real application, this would be the actual text of the selected insurance plan.`);
   };
 
-  const handleFollowUpSubmit = (question: string) => {
-    // Simulate AI response to follow-up question
+  const handleFollowUpSubmit = async (question: string) => {
     setFollowUpQuestion(question);
+    
+    // In the future, this will be replaced with actual API call
+    // Example:
+    // const response = await fetch('/api/followup', { 
+    //   method: 'POST', 
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ question, context: textContent })
+    // });
+    // const data = await response.json();
+    // setFollowUpResponse(data.answer);
+    
+    // For now, we'll simulate a response
     setFollowUpResponse(
       "Great question! Based on your plan, preventive care visits are covered at 100% with no deductible when you use in-network providers. This includes annual check-ups, vaccinations, and routine screenings. However, specialized preventive services may require pre-authorization."
     );
@@ -66,8 +96,9 @@ const Index = () => {
             onClick={handleProcessClick}
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+            disabled={isLoading}
           >
-            Process Document
+            {isLoading ? "Processing..." : "Process Document"}
           </Button>
         </div>
         
